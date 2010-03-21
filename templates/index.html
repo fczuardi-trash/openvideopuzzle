@@ -106,6 +106,15 @@ function solve(){
         piece_element.className = 'piece pos'+(i+1)
     }
 }
+
+function playVideo(){
+    document.getElementById('puzzle_image').play()
+}
+
+function pauseVideo(){
+    document.getElementById('puzzle_image').pause()
+}
+
 </script>
 </head>
 <body>
@@ -127,5 +136,7 @@ function solve(){
     <div onclick="pieceClicked(this)" id="p12" class="piece"><canvas width="160" height="120" id="c12"></canvas></div>
 </div>
 <input type="button" value="I give up!" onclick="solve()">
+<input type="button" value="play!" onclick="playVideo()">
+<input type="button" value="pause" onclick="pauseVideo()">
 </body>
 </html>

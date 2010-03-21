@@ -1,0 +1,131 @@
+<html>
+<head>
+<style>
+    body{
+        background-color:#000;
+    }
+    .piece{
+        width:160px;
+        height:120px;
+        float:left;
+        border: 1px solid transparent;
+        position:absolute;
+    }
+    .piece canvas{
+        position:absolute;
+        width:160px;
+        height:120px;
+    }
+    .piece p{
+        position: absolute;
+        z-index: 2;
+        color: #fff;
+        background-color:#000;
+        .opacity:.6;
+        padding:5px;
+        margin:5px;
+    }
+    #play-board{
+        border: 1px solid #ccc;
+        width: 648px;
+        height:366px;
+        margin:auto;
+        position:relative;
+        background-color:#222;
+    }
+    #solved_puzzle{
+        display:none;
+    }
+    .piece.pos1 {top:0px;left:0px;z-index:12;}
+    .piece.pos2 {top:0px;left:162px;z-index:11;}
+    .piece.pos3 {top:0px;left:324px;z-index:10;}
+    .piece.pos4 {top:0px;left:486px;z-index:9;}
+    .piece.pos5 {top:122px;left:0px;z-index:8;}
+    .piece.pos6 {top:122px;left:162px;z-index:7;}
+    .piece.pos7 {top:122px;left:324px;z-index:6;}
+    .piece.pos8 {top:122px;left:486px;z-index:5;}
+    .piece.pos9 {top:244px;left:0px;z-index:4;}
+    .piece.pos10 {top:244px;left:162px;z-index:3;}
+    .piece.pos11 {top:244px;left:324px;z-index:2;}
+    .piece.pos12 {top:244px;left:486px;z-index:1;}
+    #c12 {opacity:0;}
+</style>
+<script>
+last_clicked = 0;
+
+function init(){
+    pieces_can = []
+    pieces_ctx = []
+    for(var i=0;i<12;i++){
+        var can = document.getElementById('c'+(i+1));
+        var ctx = can.getContext('2d');
+        pieces_can.push(can)
+        pieces_ctx.push(ctx)
+    }
+    i = setInterval(function(){
+        var sWidth = dWidth = 160
+        var sHeight = dHeight = 120 
+        dx = dy = 0
+        var source = document.getElementById('puzzle_image')
+        for(var i=0;i<12;i++){
+            sx = (i*sWidth)%640
+            sy = ((Math.floor(i/4))*sHeight)
+            pieces_ctx[i].drawImage(source, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+        }
+    },30)
+    shuffle_pieces()
+    var last_piece = document.getElementById('p12')
+    
+}
+function shuffle_pieces(){
+    slots = [1,2,3,4,5,6,7,8,9,10,11,12]
+    for(var i=0;i<12;i++){
+        a = i
+        b = Math.floor(Math.random()*12)
+        temp = slots[a]
+        slots[a] = slots[b]
+        slots[b] = temp
+    }
+    for(var i=0;i<12;i++){
+        piece_element = document.getElementById('p'+(i+1))
+        piece_element.className = 'piece pos'+slots[i]
+        free_slot_pos = slots[i]
+        last_clicked = piece_element
+    }
+}
+function pieceClicked(piece_element){
+    console.log('switch '+last_clicked.className+' with '+piece_element.className)
+    var temp = last_clicked.className
+    last_clicked.className = piece_element.className
+    piece_element.className = temp
+}
+
+function solve(){
+    for(var i=0;i<12;i++){
+        piece_element = document.getElementById('p'+(i+1))
+        piece_element.className = 'piece pos'+(i+1)
+    }
+}
+</script>
+</head>
+<body>
+<div id="solved_puzzle">
+    <video id="puzzle_image" src="{{videos.0.url}}" autoplay="true" width="640" height="360" oncanplay="init()" controls />
+</div>
+<div id="play-board">
+    <div onclick="pieceClicked(this)" id="p1" class="piece"><p>1</p><canvas  width="160" height="120" id="c1"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p2" class="piece"><p>2</p><canvas  width="160" height="120" id="c2"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p3" class="piece"><p>3</p><canvas  width="160" height="120" id="c3"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p4" class="piece"><p>4</p><canvas  width="160" height="120" id="c4"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p5" class="piece"><p>5</p><canvas  width="160" height="120" id="c5"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p6" class="piece"><p>6</p><canvas  width="160" height="120" id="c6"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p7" class="piece"><p>7</p><canvas  width="160" height="120" id="c7"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p8" class="piece"><p>8</p><canvas  width="160" height="120" id="c8"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p9" class="piece"><p>9</p><canvas  width="160" height="120" id="c9"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p10" class="piece"><p>10</p><canvas width="160" height="120" id="c10"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p11" class="piece"><p>11</p><canvas width="160" height="120" id="c11"></canvas></div>
+    <div onclick="pieceClicked(this)" id="p12" class="piece"><canvas width="160" height="120" id="c12"></canvas></div>
+</div>
+<input type="button" value="I give up!" onclick="solve()">
+</body>
+</html>

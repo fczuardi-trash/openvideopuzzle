@@ -110,7 +110,7 @@ function solve(){
 </head>
 <body>
 <div id="solved_puzzle">
-    <video id="puzzle_image" src="{{videos.0.url}}" autoplay="true" width="640" height="360" oncanplay="init()" controls />
+    <video id="puzzle_image" src="{{videos.0.url}}" autoplay="true" width="640" height="360" oncanplay="init()" controls loop="loop"/>
 </div>
 <div id="play-board">
     <div onclick="pieceClicked(this)" id="p1" class="piece"><p>1</p><canvas  width="160" height="120" id="c1"></canvas></div>

@@ -3,6 +3,10 @@
 <style>
     body{
         background-color:#000;
+        color:#fff;
+    }
+    a{
+        color:#ccc !important;
     }
     .piece{
         width:160px;
@@ -51,9 +55,14 @@
     #c12 {opacity:0;}
 </style>
 <script>
-last_clicked = 0;
+inited = false;
+free_slot_pos = 12;
+free_slot_element = {};
 
 function init(){
+    if (inited){
+        return false;
+    } 
     pieces_can = []
     pieces_ctx = []
     for(var i=0;i<12;i++){
@@ -75,7 +84,6 @@ function init(){
     },30)
     shuffle_pieces()
     var last_piece = document.getElementById('p12')
-    
 }
 function shuffle_pieces(){
     slots = [1,2,3,4,5,6,7,8,9,10,11,12]
@@ -90,16 +98,26 @@ function shuffle_pieces(){
         piece_element = document.getElementById('p'+(i+1))
         piece_element.className = 'piece pos'+slots[i]
         free_slot_pos = slots[i]
-        last_clicked = piece_element
+        free_slot_element = piece_element
     }
 }
 function pieceClicked(piece_element){
-    console.log('switch '+last_clicked.className+' with '+piece_element.className)
-    var temp = last_clicked.className
-    last_clicked.className = piece_element.className
-    piece_element.className = temp
+    piece_pos = parseInt(piece_element.className.substring((piece_element.className.indexOf('pos')+3),piece_element.className.length))
+    if (canPieceMove(piece_pos)){
+        piece_element.className = 'piece pos'+free_slot_pos
+        free_slot_element.className = 'piece pos'+piece_pos
+        free_slot_pos = piece_pos
+    }
 }
 
+function canPieceMove(piece_pos){
+    return (
+        ((piece_pos+1 == free_slot_pos)&&(piece_pos % 4 != 0)) ||
+        ((piece_pos-1 == free_slot_pos)&&(piece_pos % 4 != 1)) ||
+        ((piece_pos-4 == free_slot_pos)&&(piece_pos-4 >0)) ||
+        ((piece_pos+4 == free_slot_pos)&&(piece_pos+4 <=12))
+        );
+}
 function solve(){
     for(var i=0;i<12;i++){
         piece_element = document.getElementById('p'+(i+1))
@@ -107,19 +125,18 @@ function solve(){
     }
 }
 
-function playVideo(){
+function restartVideo(){
     document.getElementById('puzzle_image').play()
-}
-
-function pauseVideo(){
-    document.getElementById('puzzle_image').pause()
 }
 
 </script>
 </head>
-<body>
+<body onload="init()">
+    <h1>Open Video Sliding Puzzle</h1>
+    <h2>Demo #37</h2>
+    <p>por Fabricio Zuardi (<a href="http://fabricio.org">fabricio.org</a>)
 <div id="solved_puzzle">
-    <video id="puzzle_image" src="{{videos.0.url}}" autoplay="true" width="640" height="360" oncanplay="init()" controls loop="loop"/>
+    <video id="puzzle_image" src="{{videos.0.url}}" autoplay="true" width="640" height="360" onended="restartVideo()" />
 </div>
 <div id="play-board">
     <div onclick="pieceClicked(this)" id="p1" class="piece"><p>1</p><canvas  width="160" height="120" id="c1"></canvas></div>
@@ -136,7 +153,6 @@ function pauseVideo(){
     <div onclick="pieceClicked(this)" id="p12" class="piece"><canvas width="160" height="120" id="c12"></canvas></div>
 </div>
 <input type="button" value="I give up!" onclick="solve()">
-<input type="button" value="play!" onclick="playVideo()">
-<input type="button" value="pause" onclick="pauseVideo()">
+<small>Powered by <a href="http://alpha.publicvideos.org">Public Videos (alpha)</a>, <a href="http://github.com/fczuardi/openvideopuzzle">view source</a>.</small>
 </body>
 </html>
